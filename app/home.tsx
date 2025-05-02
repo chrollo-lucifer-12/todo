@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import {PresenceTransition} from "@gluestack-ui/transitions";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const HomeScreen = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,7 +49,7 @@ const HomeScreen = () => {
                     setIsLoggedIn(false);
                 }
             } catch (e) {
-                console.log("Auth check error:", e);
+                console.log( e);
                 setIsLoggedIn(false);
             } finally {
                 setLoading(false);
@@ -67,11 +67,23 @@ const HomeScreen = () => {
         setModalVisible(true);
     }
 
+    const handleCloseModal = () =>  {
+        setModalVisible(false);
+    }
+
+    const handleDeleteTodo = async (todoId : number) => {
+        try {
+            const res = await axios.delete(`https://dummyjson.com/todos/${todoId}`);
+            setTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     const handleSaveTodo = async () => {
 
         if (!todo) return;
         try {
-            console.log(todo);
             const accessToken = await AsyncStorage.getItem('accessToken');
 
             if (accessToken) {
@@ -123,8 +135,12 @@ const HomeScreen = () => {
                             style={{ borderColor: 'gray', borderWidth: 0.5, borderRadius : 10, padding: 10, color : "white" }}
                         />
                         <View style={{ flexDirection: 'row', marginTop : 10, justifyContent: 'space-between' }}>
-                            <Button title="Cancel" onPress={() => setModalVisible(false)} />
-                            <Button title="Add" onPress={handleSaveTodo} />
+                            <Pressable style={{backgroundColor : "red", padding : 10, borderRadius : 10, }} onPress={handleCloseModal}>
+                                <Text style={{color : "white", textAlign : "center"}}> Cancel</Text>
+                            </Pressable>
+                            <Pressable style={{backgroundColor : "#2f2f2f", padding : 10, borderRadius : 10, }} onPress={handleSaveTodo}>
+                                <Text style={{color : "white", textAlign : "center"}}>Add</Text>
+                            </Pressable>
                         </View>
                     </View>
                 </View>
@@ -155,11 +171,9 @@ const HomeScreen = () => {
                         {todos.length > 0 && (
                             <View style={{ marginTop: 20,flex : 1, flexDirection : "column",  }}>
                                 {todos.map((todo, index) => (
-                                    <View key={index} style={{ borderRadius : 20, borderWidth : 0.5, borderColor : "grey", flex : 1, flexDirection : "row", padding : 20}}>
-                                        <TouchableOpacity>
-
-                                        </TouchableOpacity>
+                                    <View key={index} style={{ borderRadius : 20, borderWidth : 0.5, borderColor : "grey", flex : 1, flexDirection : "row", padding : 20, justifyContent : "space-between", alignItems : "center"}}>
                                         <Text style={{color : "white"}}>{todo.todo}</Text>
+                                        <Icon name="delete" size={30} color={"red"} onPress={() => handleDeleteTodo(todo.id)}/>
                                     </View>
                                 ))}
                             </View>

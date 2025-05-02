@@ -1,4 +1,4 @@
-import { Button, SafeAreaView, Text, TextInput, View } from "react-native";
+import {Button, Pressable, SafeAreaView, Text, TextInput, View} from "react-native";
 import { useState } from "react";
 import axios from "axios"
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +18,7 @@ const AuthScreen = () => {
             return;
         }
 
-        console.log(username, password);
+
         try {
             setIsLoading(true);
             const res = await axios.post('https://dummyjson.com/auth/login', {
@@ -32,7 +32,6 @@ const AuthScreen = () => {
                 withCredentials : true
             })
 
-            console.log(res);
 
             await AsyncStorage.setItem('accessToken', res.data.accessToken);
             await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
@@ -79,7 +78,9 @@ const AuthScreen = () => {
                     secureTextEntry={true}
                     placeholderTextColor="gray"
                 />
-                <Button disabled={isLoading} title="Login" onPress={handleLogin} />
+                <Pressable style={{backgroundColor : "#2f2f2f", padding : 10, borderRadius : 20, }} onPress={handleLogin}>
+                    <Text style={{color : "white", textAlign : "center"}}>Login</Text>
+                </Pressable>
             </View>
         </SafeAreaView>
     );
