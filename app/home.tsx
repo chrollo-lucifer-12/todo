@@ -1,19 +1,23 @@
-import {View, Text, SafeAreaView, Button} from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {useState} from "react";
-import {useNavigation} from "@react-navigation/core";
+import { Text, Button, SafeAreaView } from 'react-native';
+import {useRouter} from "expo-router";
+
 
 const HomeScreen = () => {
 
-    const navigation = useNavigation();
+    const router = useRouter()
+
+    const handleLoginPress = () => {
+        router.replace("/auth");
+    };
 
     return (
-        <SafeAreaProvider>
-            <Button title={"Login"} onPress={() => {
-                navigation.navigate("auth")
-            }}/>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Button
+                title={"Login"}
+                onPress={handleLoginPress}
+            />
             <Text style={{ color: 'blue', marginTop: 20 }}>Hello World!</Text>
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
 };
 
